@@ -332,7 +332,35 @@ static const char *helpText =
         "\tInverts the Y axis in the output distance field. The default order is bottom to top.\n"
     "\n";
 
-int main(int argc, const char * const *argv) {
+int main(int argc, const char * const *argv)
+{
+	FreetypeHandle *ft = initializeFreetype();
+	if (ft) {
+		FontHandle *font = loadFont(ft, "C:\\Windows\\Fonts\\arialbd.ttf");
+		if (font) {
+			Shape shape;
+			if (loadGlyph(shape, font, 'A')) {
+				shape.normalize();
+				//                      max. angle
+				edgeColoringSimple(shape, 3.0);
+				//           image width, height
+				Bitmap<FloatRGB> msdf(32, 32);
+				//                     range, scale, translation
+				generateMSDF(msdf, shape, 4.0, 1.0, Vector2(4.0, 4.0));
+				savePng(msdf, "msdf.png");
+
+				Bitmap<float> output(1024, 1024);
+				renderSDF(output, msdf);
+				savePng(output, "output.png");
+			}
+			destroyFont(font);
+		}
+		deinitializeFreetype(ft);
+	}
+	return 0;
+}
+
+int main2(int argc, const char * const *argv) {
     #define ABORT(msg) { puts(msg); return 1; }
 
     // Parse command line arguments

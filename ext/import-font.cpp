@@ -8,7 +8,7 @@
 #include FT_OUTLINE_H
 
 #ifdef _WIN32
-    #pragma comment(lib, "freetype.lib")
+    #pragma comment(lib, "freetype28MT.lib")
 #endif
 
 namespace msdfgen {
